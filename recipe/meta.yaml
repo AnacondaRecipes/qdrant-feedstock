@@ -1,0 +1,49 @@
+{% set name = "qdrant" %}
+{% set version = "1.16.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/qdrant/qdrant/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 5c2eace3831ecd8a0cce004fc325d656a81b63fb59e5e1420baa9805ad519f4d
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  # [py<38]
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - {{ name.replace('-', '.') }}
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://qdrant.tech/
+  summary: Vector similarity search engine and vector database.
+  description: |
+    Qdrant (read: quadrant) is a vector similarity search engine and vector database.
+    It provides a production-ready service with a convenient API to store, search,
+    and manage points—vectors with an additional payload Qdrant is tailored to
+    extended filtering support. It makes it useful for all sorts of neural-network
+    or semantic-based matching, faceted search, and other applications.
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  dev_url: https://github.com/qdrant/qdrant
+  doc_url: https://qdrant.tech/documentation
+
+extra:
+  recipe-maintainers:
+    - Cansisti
