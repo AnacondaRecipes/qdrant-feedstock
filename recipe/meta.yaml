@@ -20,18 +20,19 @@ requirements:
     - {{ compiler('cxx') }}
     - clangdev  # [linux]
     - cmake
-    - pkg-config
-    - make
+    - pkg-config  # [unix]
+    - make  # [unix]
   host:
     - libprotobuf {{ libprotobuf }}
   run:
-    - ca-certificates
-    - tzdata
+    - ca-certificates  # [unix]
+    - tzdata  # [unix]
 
 test:
   commands:
     - qdrant --help
     - test -f $PREFIX/bin/qdrant  # [unix]
+    - if not exist "%PREFIX%\\Library\\bin\\qdrant.exe" exit 1  # [win]
 
 about:
   home: https://qdrant.tech/
