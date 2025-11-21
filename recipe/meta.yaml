@@ -23,7 +23,7 @@ requirements:
     - pkg-config
     - make
   host:
-    - libprotobuf
+    - libprotobuf {{ libprotobuf }}
   run:
     - ca-certificates
     - tzdata
