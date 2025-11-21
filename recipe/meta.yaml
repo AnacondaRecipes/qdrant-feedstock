@@ -11,23 +11,27 @@ source:
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: True  # [py<38]
 
 requirements:
+  build:
+    - {{ stdlib('c') }}
+    - {{ compiler('rust') }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - clangdev  # [linux]
+    - cmake
+    - pkg-config
+    - make
   host:
-    - python
-    - pip
+    - libprotobuf
   run:
-    - python
+    - ca-certificates
+    - tzdata
 
 test:
-  imports:
-    - {{ name.replace('-', '.') }}
-  requires:
-    - pip
   commands:
-    - pip check
+    - qdrant --help
+    - test -f $PREFIX/bin/qdrant  # [unix]
 
 about:
   home: https://qdrant.tech/
