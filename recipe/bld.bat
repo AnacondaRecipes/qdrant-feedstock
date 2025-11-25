@@ -34,28 +34,42 @@ exit /b 1
 set "PROTOC=%PROTOC%"
 echo Using protoc: %PROTOC%
 
-REM Set LIBCLANG_PATH so bindgen can find libclang.dll
-REM libclang package installs libclang.dll in Library\bin
-if exist "%BUILD_PREFIX%\Library\bin\libclang.dll" (
+REM Set LIBCLANG_PATH so bindgen can find libclang-13.dll
+REM libclang13 package installs libclang-13.dll in Library\bin
+if exist "%BUILD_PREFIX%\Library\bin\libclang-13.dll" (
     set "LIBCLANG_PATH=%BUILD_PREFIX%\Library\bin"
     goto :libclang_found
 )
-if exist "%PREFIX%\Library\bin\libclang.dll" (
+if exist "%PREFIX%\Library\bin\libclang-13.dll" (
     set "LIBCLANG_PATH=%PREFIX%\Library\bin"
     goto :libclang_found
 )
-if exist "%LIBRARY_BIN%\libclang.dll" (
+if exist "%LIBRARY_BIN%\libclang-13.dll" (
     set "LIBCLANG_PATH=%LIBRARY_BIN%"
     goto :libclang_found
 )
 
-echo ERROR: Could not find libclang.dll. Please ensure libclang package is installed.
+echo ERROR: Could not find libclang-13.dll. Please ensure libclang13 package is installed.
 echo Searched in: %BUILD_PREFIX%\Library\bin, %PREFIX%\Library\bin, %LIBRARY_BIN%
 exit /b 1
 
 :libclang_found
 echo Using LIBCLANG_PATH: !LIBCLANG_PATH!
 set "LIBCLANG_PATH=!LIBCLANG_PATH!"
+
+REM Bindgen looks for libclang.dll, but libclang13 provides libclang-13.dll
+REM Create a symlink so bindgen can find it
+if not exist "!LIBCLANG_PATH!\libclang.dll" (
+    if exist "!LIBCLANG_PATH!\libclang-13.dll" (
+        echo Creating symlink from libclang-13.dll to libclang.dll for bindgen
+        mklink "!LIBCLANG_PATH!\libclang.dll" "!LIBCLANG_PATH!\libclang-13.dll" >nul 2>&1
+        if %ERRORLEVEL% NEQ 0 (
+            REM If symlink fails (needs admin), try copying instead
+            echo Symlink failed, copying libclang-13.dll to libclang.dll
+            copy /Y "!LIBCLANG_PATH!\libclang-13.dll" "!LIBCLANG_PATH!\libclang.dll" >nul
+        )
+    )
+)
 
 REM On Windows with MSVC, the build.rs script handles architecture flags automatically
 REM It uses /arch:AVX, /arch:AVX2, etc. for MSVC compiler
