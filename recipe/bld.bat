@@ -34,6 +34,43 @@ exit /b 1
 set "PROTOC=%PROTOC%"
 echo Using protoc: %PROTOC%
 
+REM Set LIBCLANG_PATH so bindgen can find clang.dll
+REM clangdev installs DLLs in Library\bin
+if exist "%BUILD_PREFIX%\Library\bin\clang.dll" (
+    set "LIBCLANG_PATH=%BUILD_PREFIX%\Library\bin"
+    goto :libclang_found
+)
+if exist "%PREFIX%\Library\bin\clang.dll" (
+    set "LIBCLANG_PATH=%PREFIX%\Library\bin"
+    goto :libclang_found
+)
+if exist "%LIBRARY_BIN%\clang.dll" (
+    set "LIBCLANG_PATH=%LIBRARY_BIN%"
+    goto :libclang_found
+)
+
+REM Try libclang.dll as well
+if exist "%BUILD_PREFIX%\Library\bin\libclang.dll" (
+    set "LIBCLANG_PATH=%BUILD_PREFIX%\Library\bin"
+    goto :libclang_found
+)
+if exist "%PREFIX%\Library\bin\libclang.dll" (
+    set "LIBCLANG_PATH=%PREFIX%\Library\bin"
+    goto :libclang_found
+)
+if exist "%LIBRARY_BIN%\libclang.dll" (
+    set "LIBCLANG_PATH=%LIBRARY_BIN%"
+    goto :libclang_found
+)
+
+echo WARNING: clang.dll or libclang.dll not found. bindgen may fail.
+echo Searched in: %BUILD_PREFIX%\Library\bin, %PREFIX%\Library\bin, %LIBRARY_BIN%
+
+:libclang_found
+if defined LIBCLANG_PATH (
+    echo Using LIBCLANG_PATH: %LIBCLANG_PATH%
+)
+
 REM On Windows with MSVC, the build.rs script handles architecture flags automatically
 REM It uses /arch:AVX, /arch:AVX2, etc. for MSVC compiler
 REM No need to modify CFLAGS/CXXFLAGS like on Linux/Mac
