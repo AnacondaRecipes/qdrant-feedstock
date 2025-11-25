@@ -18,7 +18,7 @@ requirements:
     - {{ compiler('rust') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - clangdev  # [not osx]
+    - libclang  # [not osx]
     - cmake
     - pkg-config  # [unix]
     - make  # [unix]
