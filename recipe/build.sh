@@ -6,6 +6,7 @@ cd "${SRC_DIR}"
 
 # Set PROTOC so prost-build can find protoc
 export PROTOC=$(command -v protoc)
+export LIBCLANG_PATH="${PREFIX}/lib"
 
 # Remove -march=nocona from CFLAGS/CXXFLAGS to avoid conflict with AVX2 code
 # The build.rs script sets -march=haswell for AVX2 support, but conda-build
