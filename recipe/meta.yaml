@@ -18,12 +18,14 @@ requirements:
     - {{ compiler('rust') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - clangdev  # [linux]
     - cmake
     - pkg-config  # [unix]
     - make  # [unix]
   host:
-    - libclang <=13  # [win]
+    # Need libclang.dll, in more recent versions libclang only provides .lib on windows
+    - libclang 12.0.0  # [win]
+    # Pinning to the latest
+    - libclang 21.1.8  # [linux]
     - libprotobuf {{ libprotobuf }}
   run:
     - ca-certificates  # [unix]
@@ -36,7 +38,7 @@ test:
     - if not exist "%PREFIX%\\Library\\bin\\qdrant.exe" exit 1  # [win]
 
 about:
-  home: https://qdrant.tech/
+  home: https://qdrant.tech
   summary: Vector similarity search engine and vector database.
   description: |
     Qdrant (read: quadrant) is a vector similarity search engine and vector database.
