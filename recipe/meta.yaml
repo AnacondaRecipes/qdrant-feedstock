@@ -24,8 +24,8 @@ requirements:
   host:
     # Need libclang.dll, in more recent versions libclang only provides .lib on windows
     - libclang 12.0.0  # [win]
-    # Pinning to the latest
-    - libclang 20.1.8  # [linux]
+    # libclang is not enough on linux, it needs activation scripts from clangdev
+    - clangdev  # [linux]
     - libprotobuf {{ libprotobuf }}
   run:
     - ca-certificates  # [unix]
