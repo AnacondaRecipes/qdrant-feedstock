@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/qdrant/qdrant/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 5c2eace3831ecd8a0cce004fc325d656a81b63fb59e5e1420baa9805ad519f4d
+  sha256: 6ee985c23a8290bfa1b3792723f599274e37cd8fefe615e669860689ed883c95
 
 build:
   number: 0
