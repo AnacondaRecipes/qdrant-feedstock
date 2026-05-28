@@ -1,5 +1,5 @@
 {% set name = "qdrant" %}
-{% set version = "1.17.0" %}
+{% set version = "1.18.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,10 +7,11 @@ package:
 
 source:
   url: https://github.com/qdrant/qdrant/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 6ee985c23a8290bfa1b3792723f599274e37cd8fefe615e669860689ed883c95
+  sha256: 0ad3251375dbbdeeca706509ad723545efff813537a52c05463393d9bc5068c2
 
 build:
   number: 0
+  skip: true  # [py<310]
 
 requirements:
   build:
@@ -28,9 +29,28 @@ requirements:
     # Pinning to latest
     - clangdev 20.1.8  # [linux]
     - libprotobuf {{ libprotobuf }}
+    - python
+    - pip
   run:
     - ca-certificates  # [unix]
     - tzdata  # [unix]
+    - python
+    - grpc-interceptor >=0.15,<0.16
+    - grpc-requests >=0.1,<0.2
+    - more-itertools >=10.8,<11
+    - pyjwt >=2.10,<3
+    - jsons >=1.6.3,<2
+    - pytest >=8.4,<9
+    - pytest-timeout >=2.4,<3
+    - pytest-cases >=3.9.1,<4
+    - requests >=2.32.5,<3
+    - schemathesis >=3.39.16,<4
+    - retry >=0.9.2,<0.10
+    - docker-py >=7.1.0,<8
+    - pytest-xdist >=3.8.0,<4
+    - pytest-subtests >=0.14.1,<0.15
+    - qdrant-client >=1.16.1,<2
+    - tqdm >=4.67.1,<5
 
 test:
   commands:
