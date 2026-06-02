@@ -1,17 +1,48 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 cd "${SRC_DIR}"
 
 # Set PROTOC so prost-build can find protoc
 export PROTOC=$(command -v protoc)
+echo "PROTOC: $PROTOC"
 
 # Remove -march=nocona from CFLAGS/CXXFLAGS to avoid conflict with AVX2 code
 # The build.rs script sets -march=haswell for AVX2 support, but conda-build
 # sets -march=nocona which doesn't support AVX2 instructions
 export CFLAGS=$(echo "$CFLAGS" | sed 's/-march=nocona//g')
 export CXXFLAGS=$(echo "$CXXFLAGS" | sed 's/-march=nocona//g')
+
+
+if [[ "${target_platform}" == linux-* ]]; then
+    # Fetch all Cargo dependencies into CARGO_HOME registry before build.
+    # We do this explicitly so we can patch vendored crates before compilation.
+    cargo fetch
+    echo "CARGO_HOME: ${CARGO_HOME}"
+
+    # Find autotools crate dir in cargo registry
+    AUTOTOOLS_DIR=$(find "${CARGO_HOME}" \
+        -type d -name "autotools-0.2.7" 2>/dev/null | head -1)
+
+    echo "Found: ${AUTOTOOLS_DIR}"
+
+    # autotools-0.2.7 crate has a bug where it passes the full compiler path
+    # (e.g. /build_env/bin/aarch64-conda-linux-gnu-gcc) to --host flag instead
+    # of just the triplet (aarch64-conda-linux-gnu). This causes configure to
+    # fail with "machine not recognized" on conda aarch64 cross-compilation.
+    # Fix: patch lib.rs to extract basename from cc_path before strip_suffix.
+    # See: https://github.com/lu-zero/autotools-rs (bug not fixed upstream)
+    patch -f -p1 -d "${AUTOTOOLS_DIR}" \
+        --no-backup-if-mismatch \
+        < "${RECIPE_DIR}/patches/correct_host_parse.patch"
+
+    grep "cc_basename" "${AUTOTOOLS_DIR}/src/lib.rs" || {
+        echo "ERROR: patch not applied"
+        exit 1
+    }
+    echo "Patch applied OK"
+fi
 
 cargo build --release --bin qdrant
 

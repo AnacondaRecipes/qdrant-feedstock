@@ -1,0 +1,16 @@
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -1,7 +1,11 @@
+         if !config_host && cc_path != "musl-gcc" {
+-            let host = cc_path
++            let cc_basename = std::path::Path::new(cc_path)
++                .file_name()
++                .and_then(|n| n.to_str())
++                .unwrap_or(cc_path);
++            let host = cc_basename
+                 .strip_suffix("-cc")
+-                .or_else(|| cc_path.strip_suffix("-gcc"));
++                .or_else(|| cc_basename.strip_suffix("-gcc"));
+             if let Some(host) = host {
+                 args.push(format!("--host={}", host));
+             }

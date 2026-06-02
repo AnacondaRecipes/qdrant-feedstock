@@ -1,13 +1,13 @@
 {% set name = "qdrant" %}
-{% set version = "1.17.0" %}
+{% set version = "1.18.1" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://github.com/qdrant/qdrant/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 6ee985c23a8290bfa1b3792723f599274e37cd8fefe615e669860689ed883c95
+  url: https://github.com/{{ name }}/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 0ad3251375dbbdeeca706509ad723545efff813537a52c05463393d9bc5068c2
 
 build:
   number: 0
@@ -15,22 +15,22 @@ build:
 requirements:
   build:
     - {{ stdlib('c') }}
-    - {{ compiler('rust') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - {{ compiler('rust') }}
     - cmake
+    - libtool  # [linux]
     - pkg-config  # [unix]
     - make  # [unix]
+    - libprotobuf {{ libprotobuf }}  # [linux]
   host:
-    # Need libclang.dll, in more recent versions libclang only provides .lib on windows
-    - libclang 12.0.0  # [win]
-    # libclang is not enough on linux, it needs activation scripts from clangdev
-    # Pinning to latest
-    - clangdev 20.1.8  # [linux]
     - libprotobuf {{ libprotobuf }}
   run:
+    # https://github.com/qdrant/qdrant/blob/v1.18.1/Dockerfile#L184
     - ca-certificates  # [unix]
     - tzdata  # [unix]
+    # libunwind8 -> 8 is ABI version. Latest 1.8.3 in main points on lib/libunwind.so.8
+    - libunwind  # [linux]
 
 test:
   commands:
