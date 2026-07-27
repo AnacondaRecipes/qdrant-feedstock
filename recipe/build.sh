@@ -8,11 +8,12 @@ cd "${SRC_DIR}"
 export PROTOC=$(command -v protoc)
 echo "PROTOC: $PROTOC"
 
-# Remove -march=nocona from CFLAGS/CXXFLAGS to avoid conflict with AVX2 code
-# The build.rs script sets -march=haswell for AVX2 support, but conda-build
-# sets -march=nocona which doesn't support AVX2 instructions
-export CFLAGS=$(echo "$CFLAGS" | sed 's/-march=nocona//g')
-export CXXFLAGS=$(echo "$CXXFLAGS" | sed 's/-march=nocona//g')
+# Strip conda -march=* from CFLAGS/CXXFLAGS so AVX2 from build.rs wins.
+# cc-rs for lib/quantization sets -march=haswell, but conda appends
+# -march=x86-64-v2 (formerly nocona); the last -march wins and AVX2
+# intrinsics then fail with "target specific option mismatch" on linux-64.
+export CFLAGS=$(echo "$CFLAGS" | sed -E 's/-march=[^ ]+//g')
+export CXXFLAGS=$(echo "$CXXFLAGS" | sed -E 's/-march=[^ ]+//g')
 
 
 if [[ "${target_platform}" == linux-* ]]; then
