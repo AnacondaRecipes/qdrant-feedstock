@@ -8,11 +8,11 @@ cd "${SRC_DIR}"
 export PROTOC=$(command -v protoc)
 echo "PROTOC: $PROTOC"
 
-# Remove -march=nocona from CFLAGS/CXXFLAGS to avoid conflict with AVX2 code
-# The build.rs script sets -march=haswell for AVX2 support, but conda-build
-# sets -march=nocona which doesn't support AVX2 instructions
-export CFLAGS=$(echo "$CFLAGS" | sed 's/-march=nocona//g')
-export CXXFLAGS=$(echo "$CXXFLAGS" | sed 's/-march=nocona//g')
+# Conda CFLAGS append -march=x86-64-v2 (last -march wins), which lacks AVX2 and
+# breaks lib/quantization (cc-rs uses -march=haswell). Force x86-64-v3 so AVX2
+# is available and the baseline is explicit for later repo searches.
+export CFLAGS=$(echo "$CFLAGS" | sed -E 's/-march=[^ ]+/-march=x86-64-v3/g')
+export CXXFLAGS=$(echo "$CXXFLAGS" | sed -E 's/-march=[^ ]+/-march=x86-64-v3/g')
 
 
 if [[ "${target_platform}" == linux-* ]]; then

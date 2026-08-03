@@ -10,7 +10,7 @@ source:
   sha256: 0ad3251375dbbdeeca706509ad723545efff813537a52c05463393d9bc5068c2
 
 build:
-  number: 0
+  number: 1
 
 requirements:
   build:
@@ -22,9 +22,10 @@ requirements:
     - libtool  # [linux]
     - pkg-config  # [unix]
     - make  # [unix]
-    - libprotobuf {{ libprotobuf }}  # [linux]
+    - libprotobuf 7.35.1  # [linux]
   host:
-    - libprotobuf {{ libprotobuf }}
+    - libprotobuf 7.35.1
+    - libunwind  # [linux]
   run:
     # https://github.com/qdrant/qdrant/blob/v1.18.1/Dockerfile#L184
     - ca-certificates  # [unix]
