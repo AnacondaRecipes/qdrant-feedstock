@@ -27,8 +27,6 @@ requirements:
   host:
     - libprotobuf 7.35.1
     - libunwind  # [linux]
-    - python
-    - pip
   run:
     # https://github.com/qdrant/qdrant/blob/v1.18.1/Dockerfile#L184
     - ca-certificates  # [unix]
