@@ -26,7 +26,7 @@ requirements:
     - libprotobuf 7.35.1  # [linux]
   host:
     - libprotobuf 7.35.1
-    - libunwind  # [linux]
+    - libunwind {{ libunwind }}  # [linux]
   run:
     # https://github.com/qdrant/qdrant/blob/v1.18.1/Dockerfile#L184
     - ca-certificates  # [unix]
@@ -58,3 +58,5 @@ about:
 extra:
   recipe-maintainers:
     - Cansisti
+  skip-lints:
+    - reachable_url
