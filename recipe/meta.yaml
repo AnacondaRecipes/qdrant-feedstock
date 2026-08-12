@@ -18,7 +18,6 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('rust') }}
-    - cargo-bundle-licenses
     - cmake
     - libtool  # [linux]
     - pkg-config  # [unix]
@@ -28,7 +27,7 @@ requirements:
     - libprotobuf 7.35.1
     - libunwind {{ libunwind }}  # [linux]
   run:
-    # https://github.com/qdrant/qdrant/blob/v1.18.1/Dockerfile#L184
+    # https://github.com/qdrant/qdrant/blob/v1.18.3/Dockerfile#L184
     - ca-certificates  # [unix]
     - tzdata  # [unix]
     # libunwind8 -> 8 is ABI version. Latest 1.8.3 in main points on lib/libunwind.so.8
