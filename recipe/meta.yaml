@@ -1,5 +1,5 @@
 {% set name = "qdrant" %}
-{% set version = "1.18.1" %}
+{% set version = "1.18.3" %}
 
 package:
   name: {{ name }}
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/{{ name }}/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 0ad3251375dbbdeeca706509ad723545efff813537a52c05463393d9bc5068c2
+  sha256: c5f918b4f37279ec00b22b718ca54bca7b43c9d17628b28b8eba363beceb0c96
 
 build:
-  number: 1
+  number: 0
 
 requirements:
   build:
@@ -25,9 +25,9 @@ requirements:
     - libprotobuf 7.35.1  # [linux]
   host:
     - libprotobuf 7.35.1
-    - libunwind  # [linux]
+    - libunwind {{ libunwind }}  # [linux]
   run:
-    # https://github.com/qdrant/qdrant/blob/v1.18.1/Dockerfile#L184
+    # https://github.com/qdrant/qdrant/blob/v1.18.3/Dockerfile#L184
     - ca-certificates  # [unix]
     - tzdata  # [unix]
     # libunwind8 -> 8 is ABI version. Latest 1.8.3 in main points on lib/libunwind.so.8
@@ -57,3 +57,5 @@ about:
 extra:
   recipe-maintainers:
     - Cansisti
+  skip-lints:
+    - reachable_url
