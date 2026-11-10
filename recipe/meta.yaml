@@ -19,6 +19,7 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('rust') }}
     - cmake
+    - clang # [win and arm64]
     - libtool  # [linux]
     - pkg-config  # [unix]
     - make  # [unix]
