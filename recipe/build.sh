@@ -46,6 +46,13 @@ fi
 
 cargo build --release --bin qdrant
 
+# Newer rust activation packages may export CARGO_BUILD_TARGET, which moves the
+# binary to target/<triple>/release/.
+target_dir="target"
+if [[ -n "${CARGO_BUILD_TARGET:-}" ]]; then
+    target_dir="target/${CARGO_BUILD_TARGET}"
+fi
+
 mkdir -p "${PREFIX}/bin"
-cp target/release/qdrant "${PREFIX}/bin/qdrant"
+cp "${target_dir}/release/qdrant" "${PREFIX}/bin/qdrant"
 chmod +x "${PREFIX}/bin/qdrant"
