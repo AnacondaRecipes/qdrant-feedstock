@@ -19,7 +19,8 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('rust') }}
     - cmake
-    - clang # [win and arm64]
+    # aws-lc-sys assembles aarch64 .S sources on win-arm64; needs clang-cl
+    - clang  # [win and arm64]
     - libtool  # [linux]
     - pkg-config  # [unix]
     - make  # [unix]
