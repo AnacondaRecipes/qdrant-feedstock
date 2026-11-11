@@ -21,9 +21,14 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+rem Newer rust_win-* activation packages export CARGO_BUILD_TARGET, which moves the
+rem binary to target\<triple>\release\. Resolve the real artifact directory.
+set "QDRANT_BIN=target\release\qdrant.exe"
+if defined CARGO_BUILD_TARGET set "QDRANT_BIN=target\%CARGO_BUILD_TARGET%\release\qdrant.exe"
+
 if not exist "%PREFIX%\Library\bin" mkdir "%PREFIX%\Library\bin"
-copy /Y target\release\qdrant.exe "%PREFIX%\Library\bin\qdrant.exe"
+copy /Y "%QDRANT_BIN%" "%PREFIX%\Library\bin\qdrant.exe"
 if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: Failed to copy qdrant.exe
+    echo ERROR: Failed to copy %QDRANT_BIN%
     exit /b 1
 )
